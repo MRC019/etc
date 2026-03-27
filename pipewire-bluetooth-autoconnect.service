@@ -1,6 +1,6 @@
 [Unit]
 Description=Bluetooth autoconnect service for pulseaudio
-After=pipewire.service
+After=pipewire-pulse.service
 
 [Service]
 Type=simple
@@ -8,4 +8,4 @@ ExecStartPre=/bin/sleep 2
 ExecStart=/usr/bin/bluetooth-autoconnect
 
 [Install]
-WantedBy=pipewire.service
+WantedBy=pipewire-pulse.service
