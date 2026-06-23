@@ -4,6 +4,7 @@ ENABLE_VERIFICATION=yes
 BOOT_ORDER="*, Windows*, Memtest, *fallback"
 ENABLE_SORT=yes
 FIND_BOOTLOADERS=yes
+QUIET_MODE=yes
 
 ENABLE_UKI=yes
 CUSTOM_UKI_NAME="arch"
