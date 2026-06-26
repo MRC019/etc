@@ -104,7 +104,6 @@ sudo install -m 644 linux-zen.preset /etc/mkinitcpio.d/
 sudo install -m 644 pacman.conf /etc/
 sudo install -m 644 makepkg.conf /etc/
 sudo install -m 644 network/* /etc/systemd/network/
-sudo install -m 644 limine /etc/default/
 "
 
 # правка makepkg.conf, если архитектура не raptorlake
