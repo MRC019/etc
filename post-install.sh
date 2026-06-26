@@ -116,24 +116,6 @@ if [[ "$SETUP_SB" =~ ^[Yy]$ ]]; then
     sudo mkinitcpio -P
 fi
 
-# ---------- Загрузчик Limine и мультисистемность (опционально) ----------
-if [[ "$SETUP_LIMINE" =~ ^[Yy]$ ]]; then
-    echo "Установка Limine..."
-    yay -S --noconfirm limine-mkinitcpio-hook
-    sudo install -m 644 ~/etc/limine /etc/default/limine
-
-    if [[ "$ADD_WIN" =~ ^[Yy]$ ]]; then
-        sudo limine-scan
-    fi
-
-    if [[ "$ADD_MEMTEST" =~ ^[Yy]$ ]]; then
-        yay -S --noconfirm memtest86+-efi
-        sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
-    fi
-		echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>"
-    echo "Не забудьте настроить /boot/limine.conf"
-fi
-
 # ---------- Специфичные драйверы ----------
 if [[ "$SETUP_NVIDIA" =~ ^[Yy]$ ]]; then
     echo "Настройка драйверов NVIDIA..."
@@ -151,6 +133,24 @@ if [[ "$SETUP_INTEL" =~ ^[Yy]$ ]]; then
     sudo systemctl enable intel-undervolt.service
     echo "Используйте powerprofilesctl set power-saver|balanced|performance"
 		echo "Измените лимиты питания по желанию в /etc/intel-undervolt.conf"
+fi
+
+# ---------- Загрузчик Limine и мультисистемность (опционально) ----------
+if [[ "$SETUP_LIMINE" =~ ^[Yy]$ ]]; then
+    echo "Установка Limine..."
+    yay -S --noconfirm limine-mkinitcpio-hook
+    sudo install -m 644 ~/etc/limine /etc/default/limine
+
+    if [[ "$ADD_WIN" =~ ^[Yy]$ ]]; then
+        sudo limine-scan
+    fi
+
+    if [[ "$ADD_MEMTEST" =~ ^[Yy]$ ]]; then
+        yay -S --noconfirm memtest86+-efi
+        sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
+    fi
+		echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>"
+    echo "Не забудьте настроить /boot/limine.conf"
 fi
 
 # ---------- Отключение пищалки ----------

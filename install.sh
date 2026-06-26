@@ -95,14 +95,16 @@ echo "$USERNAME:$USER_PASS" | chpasswd
 echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 # клонирование и копирование конфигов
-su "$USERNAME" -c "cd && git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc"
-mv /home/"$USERNAME"/etc/10-defaults /etc/sudoers.d/ && chmod 440 /etc/sudoers.d/10-defaults
-mv /home/"$USERNAME"/etc/mkinitcpio.conf /etc/
-mv /home/"$USERNAME"/etc/linux-zen.preset /etc/mkinitcpio.d/
-mv /home/"$USERNAME"/etc/pacman.conf /etc/
-mv /home/"$USERNAME"/etc/makepkg.conf /etc/
-mv /home/"$USERNAME"/etc/network/* /etc/systemd/network/
-
+git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc /home/"$USERNAME"/etc/
+cd /home/"$USERNAME"/etc/
+mv 10-defaults /etc/sudoers.d/ && chmod 440 /etc/sudoers.d/10-defaults
+mv mkinitcpio.conf /etc/
+mv linux-zen.preset /etc/mkinitcpio.d/
+mv pacman.conf /etc/
+mv makepkg.conf /etc/
+mv network/* /etc/systemd/network/
+rmdir network/
+cd /
 
 # правка makepkg.conf, если архитектура не raptorlake
 if [ "$MARCH" != "raptorlake" ]; then
@@ -129,7 +131,7 @@ echo "root=UUID=$ROOT_UUID rw quiet splash" > /etc/kernel/cmdline
 mkinitcpio -P
 
 # fstab umask
-sed -i 's/fmask=0022,dmask=022/umask=0077/' /etc/fstab
+sed -i 's/fmask=0022,dmask=0022/umask=0077/' /etc/fstab
 
 # удаляем скрипт после выполнения
 rm /root/setup-chroot.sh
