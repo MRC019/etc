@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+setfont ter-u22b
 
 # ---------- проверки монтирования ----------
 if ! mountpoint -q /mnt; then
