@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+NOTES=$(mktemp)
+trap 'rm -f "$NOTES"' EXIT
 
 # ---------- Проверка сети ----------
 echo "Проверка соединения..."
@@ -66,6 +68,7 @@ read -p "Установить русские man-страницы (man-pages-ru)
 read -p "Заблокировать вход по паролю для root? (Y/n): " SET_ROOT
 read -p "Git email: " GIT_EMAIL
 read -p "Git имя: " GIT_NAME
+read -p "Установить мои .dotfiles и настроить stow? (Y/n): " SET_DOTFILES
 
 # ---------- AUR-помощник ----------
 echo "Установка yay..."
@@ -104,6 +107,7 @@ fi
 if [[ ! "$SET_ROOT" =~ ^[Nn]$ ]]; then
     echo "Блокировка root-пароля..."
     sudo passwd -l root
+    echo "Чтобы разблокировать root используйте sudo passwd -u root" >> "$NOTES"
 fi
 
 # ---------- Secure Boot ----------
@@ -131,8 +135,8 @@ if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
     sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
 	rm ~/etc/intel-undervolt.conf
     sudo systemctl enable intel-undervolt.service
-    echo "Используйте powerprofilesctl set power-saver|balanced|performance"
-	echo "Измените лимиты питания по желанию в /etc/intel-undervolt.conf"
+    echo "Используйте powerprofilesctl set power-saver|balanced|performance" >> "$NOTES"
+	echo "Измените лимиты питания по желанию в /etc/intel-undervolt.conf" >> "$NOTES"
 fi
 
 # ---------- Загрузчик Limine и мультисистемность ----------
@@ -150,8 +154,8 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
         yay -S --noconfirm memtest86+-efi
         sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
     fi
-	echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>"
-    echo "Не забудьте настроить /boot/limine.conf"
+	echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>" >> "$NOTES"
+    echo "Не забудьте настроить /boot/limine.conf" >> "$NOTES"
 fi
 
 # ---------- Отключение пищалки ----------
@@ -170,6 +174,7 @@ fi
 # ---------- Русские man-страницы ----------
 if [[ ! "$SET_MAN_RU" =~ ^[Nn]$ ]]; then
     yay -S --noconfirm man-pages-ru
+    echo "Используйте man -k" >> "$NOTES"
 fi
 
 # ---------- Полезные TUI/CLI утилиты ----------
@@ -199,11 +204,20 @@ git config --global core.editor "nvim"
 git config --global core.pager "less -Fr"
 git config --global init.defaultBranch master
 
+# ---------- Настройка .dotfiles ----------
+if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
+    echo "Установка .dotfiles и stow..."
+    yay -S --noconfirm stow
+    git clone --depth=1 https://git.postmodernist.ru/Rabbit/.dotfiles ~/.dotfiles
+    cd ~/.dotfiles
+    rm -rf ~/.config/fish
+    stow -vS
+fi
+
 # ---------- Завершение ----------
 echo
-echo "=== Post-install завершён ==="
-echo "Советы:"
-echo "  - настроить stow для управления dotfiles"
-echo "Можете использовать мой репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/.dotfiles"
+echo "=== Советы по дальнейшей настройке ==="
+cat "$NOTES"
 echo
+echo "=== Post‑install завершён ==="
 echo "Приятной работы!"
