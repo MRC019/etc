@@ -130,7 +130,7 @@ echo "root=UUID=$ROOT_UUID rw quiet splash" > /etc/kernel/cmdline
 mkinitcpio -P
 
 # fstab umask
-sed -i 's/fmask=0022,dmask=0022/umask=0077/' /etc/fstab
+sed -i '/\/boot/s/fmask=0022,dmask=0022/umask=0077/' /etc/fstab
 
 # удаляем скрипт после выполнения
 rm /root/setup-chroot.sh
