@@ -81,7 +81,7 @@ go telemetry off 2>/dev/null || true
 
 # ---------- Основные пакеты ----------
 echo "Установка основных пакетов..."
-yay -S --noconfirm plzip ntfs-3g alsa-utils \
+yay -S --needed --noconfirm plzip ntfs-3g alsa-utils \
     pipewire{,-pulse,-jack,-alsa} wireplumber rtkit wiremix \
     ufw
 
@@ -95,11 +95,11 @@ echo "Открывать порты можно так: sudo ufw allow 25565/tcp 
 # ---------- Bluetooth ----------
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
     echo "Настройка Bluetooth..."
-    yay -S --noconfirm bluez bluez-utils bluetooth-autoconnect
+    yay -S --needed --noconfirm bluez bluez-utils bluetooth-autoconnect
     sudo systemctl enable --now bluetooth
 
     mkdir -p ~/.config/systemd/user
-    mv ~/etc/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
+    cp ~/etc/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
     systemctl --user enable pipewire-bluetooth-autoconnect.service
     sudo systemctl enable bluetooth-autoconnect.service
 fi
@@ -122,9 +122,8 @@ fi
 # ---------- Специфичные драйверы ----------
 if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
     echo "Настройка драйверов NVIDIA..."
-    yay -S --noconfirm nvidia-open-dkms
+    yay -S --needed --noconfirm nvidia-open-dkms
     sudo install -m 644 ~/etc/nvidia.conf /etc/modprobe.d/
-	rm ~/etc/nvidia.conf
     sudo sed -i '1s/^#//' /etc/mkinitcpio.conf
     sudo sed -i '2d' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
@@ -132,9 +131,8 @@ fi
 
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
     echo "Настройка Intel-undervolt и power-profiles..."
-    yay -S --noconfirm intel-undervolt power-profiles-daemon python-gobject
+    yay -S --needed --noconfirm intel-undervolt power-profiles-daemon python-gobject
     sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
-	rm ~/etc/intel-undervolt.conf
     sudo systemctl enable intel-undervolt.service
     echo "Используйте powerprofilesctl get, чтобы узнать текущий профиль." >> "$NOTES"
     echo "powerprofilesctl set power-saver|balanced|performance, чтобы выставить." >> "$NOTES"
@@ -144,16 +142,15 @@ fi
 # ---------- Загрузчик Limine и мультисистемность ----------
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     echo "Установка Limine..."
-    yay -S --noconfirm limine-mkinitcpio-hook
+    yay -S --needed --noconfirm limine-mkinitcpio-hook
     sudo install -m 644 ~/etc/limine /etc/default/limine
-	rm ~/etc/limine
 
     if [[ ! "$ADD_WIN" =~ ^[Nn]$ ]]; then
         sudo limine-scan
     fi
 
     if [[ ! "$ADD_MEMTEST" =~ ^[Nn]$ ]]; then
-        yay -S --noconfirm memtest86+-efi
+        yay -S --needed --noconfirm memtest86+-efi
         sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
     fi
 	echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>" >> "$NOTES"
@@ -175,13 +172,13 @@ fi
 
 # ---------- Русские man-страницы ----------
 if [[ ! "$SET_MAN_RU" =~ ^[Nn]$ ]]; then
-    yay -S --noconfirm man-pages-ru
+    yay -S --needed --noconfirm man-pages-ru
     echo -e "Используйте man с названием нужной статьи, если знаете его, \nman -k для поиска совпадений в названии \nи man -K для поиска внутри статей." >> "$NOTES"
 fi
 
 # ---------- Полезные TUI/CLI утилиты ----------
 echo "Установка консольных утилит..."
-yay -S --noconfirm \
+yay -S --needed --noconfirm \
     fish pkgfile fd ripgrep lsd \
     luarocks lua51 tree-sitter-cli \
     fastfetch impala bluetui btop \
@@ -211,7 +208,7 @@ git config --global init.defaultBranch master
 # ---------- Настройка .dotfiles ----------
 if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
     echo "Установка .dotfiles и stow..."
-    yay -S --noconfirm stow
+    yay -S --needed --noconfirm stow
     git clone --depth=1 https://git.postmodernist.ru/Rabbit/.dotfiles ~/.dotfiles
     cd ~/.dotfiles
     rm -rf ~/.config/fish
@@ -220,6 +217,7 @@ if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
 fi
 
 # ---------- Завершение ----------
+rm -rf ~/etc/{pipewire-bluetooth-autoconnect.service, nvidia.conf, intel-undervolt.conf, limine}
 echo
 echo "=== Советы по дальнейшей настройке ==="
 cat "$NOTES"
