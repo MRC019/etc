@@ -63,6 +63,7 @@ fi
 read -p "Отключить watchdog? (Y/n): " SET_WATCHDOG
 read -p "Отключить пищалку (bell-style none в /etc/inputrc)? (Y/n): " SET_BELL
 read -p "Установить русские man-страницы (man-pages-ru)? (Y/n): " SET_MAN_RU
+read -p "Заблокировать вход по паролю для root? (Y/n): " SET_ROOT
 read -p "Git email: " GIT_EMAIL
 read -p "Git имя: " GIT_NAME
 
@@ -87,7 +88,7 @@ systemctl --user enable pipewire-pulse.service
 echo "Настройка брандмауэра..."
 sudo ufw enable
 
-# ---------- Bluetooth (опционально) ----------
+# ---------- Bluetooth ----------
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
     echo "Настройка Bluetooth..."
     yay -S --noconfirm bluez bluez-utils bluetooth-autoconnect
@@ -100,10 +101,12 @@ if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
 fi
 
 # ---------- Безопасность ----------
-echo "Блокировка root-пароля..."
-sudo passwd -l root
+if [[ ! "$SET_ROOT" =~ ^[Nn]$ ]]; then
+    echo "Блокировка root-пароля..."
+    sudo passwd -l root
+fi
 
-# ---------- Secure Boot (опционально) ----------
+# ---------- Secure Boot ----------
 if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
     echo "Настройка Secure Boot..."
     sudo sbctl create-keys
@@ -132,7 +135,7 @@ if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
 	echo "Измените лимиты питания по желанию в /etc/intel-undervolt.conf"
 fi
 
-# ---------- Загрузчик Limine и мультисистемность (опционально) ----------
+# ---------- Загрузчик Limine и мультисистемность ----------
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     echo "Установка Limine..."
     yay -S --noconfirm limine-mkinitcpio-hook
@@ -199,7 +202,7 @@ git config --global init.defaultBranch master
 # ---------- Завершение ----------
 echo
 echo "=== Post-install завершён ==="
-echo "Осталось по желанию:"
+echo "Советы:"
 echo "  - настроить stow для управления dotfiles"
 echo "Можете использовать мой репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/.dotfiles"
 echo
