@@ -59,7 +59,7 @@ done
 # ---------- монтирование ----------
 mount "$ROOT" /mnt
 mount -m "$ESP" /mnt/boot
-if [ -n "$SWAP"]; then
+if [ -n "$SWAP" ]; then
 		swapon "$SWAP"
 fi
 
