@@ -95,15 +95,15 @@ echo "$USERNAME:$USER_PASS" | chpasswd
 echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 # клонирование и копирование конфигов
-git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc /home/"$USERNAME"/etc/
+su "$USERNAME" -c "cd && git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc"
 cd /home/"$USERNAME"/etc/
-mv 10-defaults /etc/sudoers.d/ && chmod 440 /etc/sudoers.d/10-defaults
-mv mkinitcpio.conf /etc/
-mv linux-zen.preset /etc/mkinitcpio.d/
-mv pacman.conf /etc/
-mv makepkg.conf /etc/
-mv network/* /etc/systemd/network/
-rmdir network/
+install -m 440 10-defaults /etc/sudoers.d/
+install -m 644 mkinitcpio.conf /etc/
+install -m 644 linux-zen.preset /etc/mkinitcpio.d/
+install -m 644 pacman.conf /etc/
+install -m 644 makepkg.conf /etc/
+install -m 644 network/* /etc/systemd/network/
+rm -r 10-defaults mkinitcpio.conf linux-zen.preset pacman.conf makepkg.conf network
 cd /
 
 # правка makepkg.conf, если архитектура не raptorlake
