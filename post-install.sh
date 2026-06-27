@@ -9,41 +9,41 @@ if ! ping -c 3 google.com; then
 fi
 
 # ---------- Проверка необходимых файлов ----------
-read -p "Настроить Bluetooth? (y/N): " SETUP_BT
-if [[ "$SETUP_BT" =~ ^[Yy]$ ]] && [ ! -f ~/etc/pipewire-bluetooth-autoconnect.service ]; then
+read -p "Настроить Bluetooth? (Y/n): " SETUP_BT
+if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]] && [ ! -f ~/etc/pipewire-bluetooth-autoconnect.service ]; then
     echo "Ошибка: ~/etc/pipewire-bluetooth-autoconnect.service не найден."
     echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
     exit 1
 fi
 
-read -p "Установить Limine и настроить dual‑boot? (y/N): " SETUP_LIMINE
-if [[ "$SETUP_LIMINE" =~ ^[Yy]$ ]]; then
-    read -p "  Найти и добавить Windows в меню Limine? (y/N): " ADD_WIN
-    read -p "  Установить Memtest86+? (y/N): " ADD_MEMTEST
-fi
-if [[ "$SETUP_LIMINE" =~ ^[Yy]$ ]] && [ ! -f ~/etc/limine ]; then
-    echo "Ошибка: ~/etc/limine не найден."
-    echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
-    exit 1
+read -p "Установить Limine и настроить dual‑boot? (Y/n): " SETUP_LIMINE
+if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
+    read -p "  Найти и добавить Windows в меню Limine? (Y/n): " ADD_WIN
+    read -p "  Установить Memtest86+? (Y/n): " ADD_MEMTEST
+		if [ ! -f ~/etc/limine ]; then
+				echo "Ошибка: ~/etc/limine не найден."
+				echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
+				exit 1
+		fi
 fi
 
-read -p "Настроить драйверы NVIDIA? (y/N): " SETUP_NVIDIA
-if [[ "$SETUP_NVIDIA" =~ ^[Yy]$ ]] && [ ! -f ~/etc/nvidia.conf ]; then
+read -p "Настроить драйверы NVIDIA? (Y/n): " SETUP_NVIDIA
+if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]] && [ ! -f ~/etc/nvidia.conf ]; then
     echo "Ошибка: ~/etc/nvidia.conf не найден."
     echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
     exit 1
 fi
 
-read -p "Настроить Intel‑undervolt и power‑profiles? (y/N): " SETUP_INTEL
-if [[ "$SETUP_INTEL" =~ ^[Yy]$ ]] && [ ! -f ~/etc/intel-undervolt.conf ]; then
+read -p "Настроить Intel‑undervolt и power‑profiles? (Y/n): " SETUP_INTEL
+if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]] && [ ! -f ~/etc/intel-undervolt.conf ]; then
     echo "Ошибка: ~/etc/intel-undervolt.conf не найден."
     echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
     exit 1
 fi
 
 # ---------- Проверка Secure Boot Setup Mode ----------
-read -p "Настроить Secure Boot? (y/N): " SETUP_SB
-if [[ "$SETUP_SB" =~ ^[Yy]$ ]]; then
+read -p "Настроить Secure Boot? (Y/n): " SETUP_SB
+if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
     SETUP_MODE_FILE=$(ls /sys/firmware/efi/efivars/SetupMode-* 2>/dev/null | head -1)
     if [ -z "$SETUP_MODE_FILE" ]; then
         echo "Ошибка: не удалось найти переменную SetupMode. Убедитесь, что система загружена в UEFI."
@@ -59,8 +59,8 @@ if [[ "$SETUP_SB" =~ ^[Yy]$ ]]; then
 fi
 
 # ---------- Вопросы ----------
-read -p "Отключить пищалку (bell-style none в /etc/inputrc)? (y/N): " SET_BELL
-read -p "Установить русские man-страницы (man-pages-ru)? (y/N): " SET_MAN_RU
+read -p "Отключить пищалку (bell-style none в /etc/inputrc)? (Y/n): " SET_BELL
+read -p "Установить русские man-страницы (man-pages-ru)? (Y/n): " SET_MAN_RU
 read -p "Git email: " GIT_EMAIL
 read -p "Git имя: " GIT_NAME
 
@@ -92,7 +92,7 @@ sudo ufw enable
 sudo ufw status verbose
 
 # ---------- Bluetooth (опционально) ----------
-if [[ "$SETUP_BT" =~ ^[Yy]$ ]]; then
+if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
     echo "Настройка Bluetooth..."
     yay -S --noconfirm bluez bluez-utils bluetooth-autoconnect
     sudo systemctl enable --now bluetooth
@@ -108,7 +108,7 @@ echo "Блокировка root-пароля..."
 sudo passwd -l root
 
 # ---------- Secure Boot (опционально) ----------
-if [[ "$SETUP_SB" =~ ^[Yy]$ ]]; then
+if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
     echo "Настройка Secure Boot..."
     yay -S --noconfirm sbctl
     sudo sbctl create-keys
@@ -117,7 +117,7 @@ if [[ "$SETUP_SB" =~ ^[Yy]$ ]]; then
 fi
 
 # ---------- Специфичные драйверы ----------
-if [[ "$SETUP_NVIDIA" =~ ^[Yy]$ ]]; then
+if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
     echo "Настройка драйверов NVIDIA..."
     yay -S --noconfirm nvidia-open-dkms
     sudo install -m 644 ~/etc/nvidia.conf /etc/modprobe.d/
@@ -127,7 +127,7 @@ if [[ "$SETUP_NVIDIA" =~ ^[Yy]$ ]]; then
     sudo mkinitcpio -P
 fi
 
-if [[ "$SETUP_INTEL" =~ ^[Yy]$ ]]; then
+if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
     echo "Настройка Intel‑undervolt и power‑profiles..."
     yay -S --noconfirm intel-undervolt power-profiles-daemon python-gobject
     sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
@@ -138,17 +138,17 @@ if [[ "$SETUP_INTEL" =~ ^[Yy]$ ]]; then
 fi
 
 # ---------- Загрузчик Limine и мультисистемность (опционально) ----------
-if [[ "$SETUP_LIMINE" =~ ^[Yy]$ ]]; then
+if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     echo "Установка Limine..."
     yay -S --noconfirm limine-mkinitcpio-hook
     sudo install -m 644 ~/etc/limine /etc/default/limine
 		rm ~/etc/limine
 
-    if [[ "$ADD_WIN" =~ ^[Yy]$ ]]; then
+    if [[ ! "$ADD_WIN" =~ ^[Nn]$ ]]; then
         sudo limine-scan
     fi
 
-    if [[ "$ADD_MEMTEST" =~ ^[Yy]$ ]]; then
+    if [[ ! "$ADD_MEMTEST" =~ ^[Nn]$ ]]; then
         yay -S --noconfirm memtest86+-efi
         sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
     fi
@@ -157,13 +157,13 @@ if [[ "$SETUP_LIMINE" =~ ^[Yy]$ ]]; then
 fi
 
 # ---------- Отключение пищалки ----------
-if [[ "$SET_BELL" =~ ^[Yy]$ ]]; then
+if [[ ! "$SET_BELL" =~ ^[Nn]$ ]]; then
     sudo sed -i 's/^# set bell-style none/set bell-style none/' /etc/inputrc
     echo "Пищалка отключена в /etc/inputrc"
 fi
 
 # ---------- Русские man-страницы ----------
-if [[ "$SET_MAN_RU" =~ ^[Yy]$ ]]; then
+if [[ ! "$SET_MAN_RU" =~ ^[Nn]$ ]]; then
     yay -S --noconfirm man-pages-ru
 fi
 
