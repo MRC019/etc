@@ -213,7 +213,8 @@ if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
     git clone --depth=1 https://git.postmodernist.ru/Rabbit/.dotfiles ~/.dotfiles
     cd ~/.dotfiles
     rm -rf ~/.config/fish
-    stow -vS
+    stow -vS btop fastfetch fish nvim
+    echo "Подробности конфигураций можно узнать в моей инструкции" >> "$NOTES"
 fi
 
 # ---------- Завершение ----------
