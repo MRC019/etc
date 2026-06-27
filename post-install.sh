@@ -64,7 +64,6 @@ read -p "Git имя: " GIT_NAME
 # ---------- Обновление системы ----------
 echo "Обновление системы..."
 sudo pacman -Syu --noconfirm
-sudo timedatectl set-ntp true
 
 # ---------- AUR-помощник ----------
 echo "Установка yay..."
