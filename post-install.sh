@@ -8,14 +8,25 @@ if ! ping -c 3 google.com; then
     exit 1
 fi
 
-# ---------- Проверка необходимых файлов ----------
-read -p "Настроить Bluetooth? (Y/n): " SETUP_BT
-if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]] && [ ! -f ~/etc/pipewire-bluetooth-autoconnect.service ]; then
-    echo "Ошибка: ~/etc/pipewire-bluetooth-autoconnect.service не найден."
-    echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
-    exit 1
+# ---------- Обновление системы ----------
+echo "Обновление системы..."
+sudo pacman -Syu --noconfirm
+sudo timedatectl set-ntp true
+
+# ---------- Проверка Secure Boot Setup Mode ----------
+read -p "Настроить Secure Boot? (Y/n): " SETUP_SB
+if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
+    echo "Проверка статуса Secure Boot..."
+    sudo pacman -S --needed --noconfirm sbctl
+    if ! sbctl status | grep -q "Setup Mode:.*Enabled"; then
+        echo "Ошибка: Secure Boot Setup Mode не активен."
+        echo "Включите его в BIOS (обычно 'Setup Mode' или 'Clear Secure Boot Keys') и перезапустите скрипт."
+        exit 1
+    fi
+    echo "Secure Boot Setup Mode активен."
 fi
 
+# ---------- Проверка необходимых файлов ----------
 read -p "Установить Limine и настроить dual-boot? (Y/n): " SETUP_LIMINE
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     read -p "  Найти и добавить Windows в меню Limine? (Y/n): " ADD_WIN
@@ -41,29 +52,19 @@ if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]] && [ ! -f ~/etc/intel-undervolt.conf ]; then
     exit 1
 fi
 
-# ---------- Проверка Secure Boot Setup Mode ----------
-read -p "Настроить Secure Boot? (Y/n): " SETUP_SB
-if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
-    echo "Проверка статуса Secure Boot..."
-    sudo pacman -S --needed --noconfirm sbctl
-    if ! sbctl status | grep -q "Setup Mode:.*Enabled"; then
-        echo "Ошибка: Secure Boot Setup Mode не активен."
-        echo "Включите его в BIOS (обычно 'Setup Mode' или 'Clear Secure Boot Keys') и перезапустите скрипт."
-        exit 1
-    fi
-    echo "Secure Boot Setup Mode активен."
+read -p "Настроить Bluetooth? (Y/n): " SETUP_BT
+if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]] && [ ! -f ~/etc/pipewire-bluetooth-autoconnect.service ]; then
+    echo "Ошибка: ~/etc/pipewire-bluetooth-autoconnect.service не найден."
+    echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
+    exit 1
 fi
 
 # ---------- Вопросы ----------
-read -p "Отключить пищалку (bell-style none в /etc/inputrc)? (Y/n): " SET_BELL
 read -p "Отключить watchdog? (Y/n): " SET_WATCHDOG
+read -p "Отключить пищалку (bell-style none в /etc/inputrc)? (Y/n): " SET_BELL
 read -p "Установить русские man-страницы (man-pages-ru)? (Y/n): " SET_MAN_RU
 read -p "Git email: " GIT_EMAIL
 read -p "Git имя: " GIT_NAME
-
-# ---------- Обновление системы ----------
-echo "Обновление системы..."
-sudo pacman -Syu --noconfirm
 
 # ---------- AUR-помощник ----------
 echo "Установка yay..."
@@ -71,8 +72,7 @@ git clone --depth=1 https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si --noconfirm
 cd ..
-rm -rf yay
-rm -rf ~/.config/go
+rm -rf yay ~/.config/go
 go telemetry off 2>/dev/null || true
 
 # ---------- Основные пакеты ----------
@@ -86,7 +86,6 @@ systemctl --user enable pipewire-pulse.service
 # ---------- Брандмауэр ----------
 echo "Настройка брандмауэра..."
 sudo ufw enable
-sudo ufw status verbose
 
 # ---------- Bluetooth (опционально) ----------
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
@@ -117,7 +116,7 @@ if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
     echo "Настройка драйверов NVIDIA..."
     yay -S --noconfirm nvidia-open-dkms
     sudo install -m 644 ~/etc/nvidia.conf /etc/modprobe.d/
-		rm ~/etc/nvidia.conf
+	rm ~/etc/nvidia.conf
     sudo sed -i '1s/^#//' /etc/mkinitcpio.conf
     sudo sed -i '2d' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
@@ -127,10 +126,10 @@ if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
     echo "Настройка Intel-undervolt и power-profiles..."
     yay -S --noconfirm intel-undervolt power-profiles-daemon python-gobject
     sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
-		rm ~/etc/intel-undervolt.conf
+	rm ~/etc/intel-undervolt.conf
     sudo systemctl enable intel-undervolt.service
     echo "Используйте powerprofilesctl set power-saver|balanced|performance"
-		echo "Измените лимиты питания по желанию в /etc/intel-undervolt.conf"
+	echo "Измените лимиты питания по желанию в /etc/intel-undervolt.conf"
 fi
 
 # ---------- Загрузчик Limine и мультисистемность (опционально) ----------
@@ -138,7 +137,7 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     echo "Установка Limine..."
     yay -S --noconfirm limine-mkinitcpio-hook
     sudo install -m 644 ~/etc/limine /etc/default/limine
-		rm ~/etc/limine
+	rm ~/etc/limine
 
     if [[ ! "$ADD_WIN" =~ ^[Nn]$ ]]; then
         sudo limine-scan
@@ -148,7 +147,7 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
         yay -S --noconfirm memtest86+-efi
         sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
     fi
-		echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>"
+	echo "Можете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>"
     echo "Не забудьте настроить /boot/limine.conf"
 fi
 
