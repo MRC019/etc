@@ -124,7 +124,7 @@ if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
 fi
 
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
-    echo "Настройка Intel‑undervolt и power‑profiles..."
+    echo "Настройка Intel-undervolt и power-profiles..."
     yay -S --noconfirm intel-undervolt power-profiles-daemon python-gobject
     sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
 		rm ~/etc/intel-undervolt.conf
@@ -192,7 +192,7 @@ git config --global init.defaultBranch master
 
 # ---------- Завершение ----------
 echo
-echo "=== Post‑install завершён ==="
+echo "=== Post-install завершён ==="
 echo "Осталось по желанию:"
 echo "  - настроить stow для управления dotfiles"
 echo "Можете использовать мой репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/.dotfiles"
