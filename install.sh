@@ -31,7 +31,6 @@ read -s USER_PASS
 echo
 
 # выбор микрокода
-PS3='Тип процессора (1 - Intel, 2 - AMD): '
 select ucode_choice in "intel-ucode" "amd-ucode"; do
     UCODE_PKG=$ucode_choice
     break
@@ -52,10 +51,9 @@ LANG_FULL="${LANG_CHOICE}.UTF-8"
 
 # архитектура для makepkg
 echo "Выберите архитектуру процессора:"
-PS3='Архитектура (1 - raptorlake, 2 - native, 3 - x86-64-v3, 4 - x86-64-v4, 5 - другая): '
-select march_choice in "raptorlake" "native" "x86-64-v3" "x86-64-v4" "custom"; do
+select march_choice in "raptorlake" "native" "x86-64-v3" "x86-64-v4" "other"; do
     case $march_choice in
-        custom) read -p "Введите архитектуру (например znver4): " MARCH; break;;
+        other) read -p "Введите архитектуру (например znver4): " MARCH; break;;
         "")     echo "Неверный выбор";;
         *)      MARCH=$march_choice; break;;
     esac
@@ -111,8 +109,7 @@ cd /
 
 # правка makepkg.conf, если архитектура не raptorlake
 if [ "$MARCH" != "raptorlake" ]; then
-    sed -i "s/-march=raptorlake/-march=$MARCH/" /etc/makepkg.conf
-    sed -i "s/target-cpu=raptorlake/target-cpu=$MARCH/" /etc/makepkg.conf
+    sed -i "s/raptorlake/$MARCH/g" /etc/makepkg.conf
 fi
 
 # сеть
@@ -129,8 +126,7 @@ if [ -f /boot/EFI/BOOT/BOOTX64.EFI ]; then
     mv /boot/EFI/BOOT/BOOTX64.EFI /boot/EFI/BOOT/bootx64_win.efi
     echo "Резервный загрузчик Windows переименован в bootx64_win.efi"
 fi
-ROOT_UUID=$(blkid -s UUID -o value "$ROOT")
-echo "root=UUID=$ROOT_UUID rw quiet splash" > /etc/kernel/cmdline
+echo "root=UUID=$(blkid -s UUID -o value "$ROOT") rw quiet splash" > /etc/kernel/cmdline
 mkinitcpio -P
 
 # удаляем скрипт после выполнения
