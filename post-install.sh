@@ -99,7 +99,7 @@ if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
     sudo systemctl enable --now bluetooth
 
     mkdir -p ~/.config/systemd/user
-    cp ~/etc/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
+    cp ~/etc/post-conf/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
     systemctl --user enable pipewire-bluetooth-autoconnect.service
     sudo systemctl enable bluetooth-autoconnect.service
 fi
@@ -123,7 +123,7 @@ fi
 if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
     echo "Настройка драйверов NVIDIA..."
     yay -S --needed --noconfirm nvidia-open-dkms
-    sudo install -m 644 ~/etc/nvidia.conf /etc/modprobe.d/
+    sudo install -m 644 ~/etc/post-conf/nvidia.conf /etc/modprobe.d/
     sudo sed -i '1s/^#//' /etc/mkinitcpio.conf
     sudo sed -i '2d' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
@@ -132,7 +132,7 @@ fi
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
     echo "Настройка Intel-undervolt и power-profiles..."
     yay -S --needed --noconfirm intel-undervolt power-profiles-daemon python-gobject
-    sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
+    sudo install -m 644 ~/etc/post-conf/intel-undervolt.conf /etc/
     sudo systemctl enable intel-undervolt.service
     echo -e "Используйте powerprofilesctl get, чтобы узнать текущий профиль." >> "$NOTES"
     echo -e "powerprofilesctl set power-saver|balanced|performance, чтобы выставить.\n" >> "$NOTES"
@@ -143,7 +143,7 @@ fi
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     echo "Установка Limine..."
     yay -S --needed --noconfirm limine-mkinitcpio-hook
-    sudo install -m 644 ~/etc/limine /etc/default/limine
+    sudo install -m 644 ~/etc/post-conf/limine /etc/default/limine
 
     if [[ ! "$ADD_WIN" =~ ^[Nn]$ ]]; then
         sudo limine-scan
@@ -218,7 +218,7 @@ if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
 fi
 
 # ---------- Завершение ----------
-rm -rf ~/etc/{pipewire-bluetooth-autoconnect.service,nvidia.conf,intel-undervolt.conf,limine}
+rm -rf ~/etc/post-conf/
 echo
 echo "======================= Советы по дальнейшей настройке ======================="
 cat "$NOTES"

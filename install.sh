@@ -97,14 +97,15 @@ echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 # клонирование и копирование конфигов
 su "$USERNAME" -c "cd && git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc"
-cd /home/"$USERNAME"/etc/
+cd /home/"$USERNAME"/etc/early-conf
 install -m 440 10-defaults /etc/sudoers.d/
 install -m 644 mkinitcpio.conf /etc/
 install -m 644 linux-zen.preset /etc/mkinitcpio.d/
 install -m 644 pacman.conf /etc/
 install -m 644 makepkg.conf /etc/
 install -m 644 network/* /etc/systemd/network/
-rm -r 10-defaults mkinitcpio.conf linux-zen.preset pacman.conf makepkg.conf network
+cd ..
+rm -r early-conf
 cd /
 
 # правка makepkg.conf, если архитектура не raptorlake
