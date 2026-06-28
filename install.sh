@@ -76,8 +76,9 @@ cat > /mnt/root/setup-chroot.sh << 'EOF'
 set -e
 
 # время
-timedatectl set-timezone "$TIMEZONE"
+ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
 hwclock --systohc
+timedatectl set-timezone "$TIMEZONE"
 
 # локаль
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
