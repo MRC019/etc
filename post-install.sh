@@ -90,7 +90,7 @@ systemctl --user enable pipewire-pulse.service
 # ---------- Брандмауэр ----------
 echo "Настройка брандмауэра..."
 sudo ufw enable
-echo -e "\tОткрывать порты можно так: sudo ufw allow 25565/tcp comment 'minecraft'\n" >> "$NOTES"
+echo -e "Открывать порты можно так: sudo ufw allow 25565/tcp comment 'minecraft'\n" >> "$NOTES"
 
 # ---------- Bluetooth ----------
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
@@ -108,7 +108,7 @@ fi
 if [[ ! "$SET_ROOT" =~ ^[Nn]$ ]]; then
     echo "Блокировка root-пароля..."
     sudo passwd -l root
-    echo -e "\tЧтобы разблокировать root, используйте: sudo passwd -u root\n" >> "$NOTES"
+    echo -e "Чтобы разблокировать root, используйте: sudo passwd -u root\n" >> "$NOTES"
 fi
 
 # ---------- Secure Boot ----------
@@ -134,9 +134,9 @@ if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
     yay -S --needed --noconfirm intel-undervolt power-profiles-daemon python-gobject
     sudo install -m 644 ~/etc/intel-undervolt.conf /etc/
     sudo systemctl enable intel-undervolt.service
-    echo -e "\tИспользуйте powerprofilesctl get, чтобы узнать текущий профиль." >> "$NOTES"
-    echo -e "\tpowerprofilesctl set power-saver|balanced|performance, чтобы выставить.\n" >> "$NOTES"
-	echo -e "\tИзменить лимиты питания можно в /etc/intel-undervolt.conf\n" >> "$NOTES"
+    echo -e "Используйте powerprofilesctl get, чтобы узнать текущий профиль." >> "$NOTES"
+    echo -e "powerprofilesctl set power-saver|balanced|performance, чтобы выставить.\n" >> "$NOTES"
+	echo -e "Изменить лимиты питания можно в /etc/intel-undervolt.conf\n" >> "$NOTES"
 fi
 
 # ---------- Загрузчик Limine и мультисистемность ----------
@@ -153,8 +153,8 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
         yay -S --needed --noconfirm memtest86+-efi
         sudo limine-entry-tool --add-efi Memtest /boot/memtest86+/memtest.efi
     fi
-	echo -e "\tМожете удалить ненужную запись efibootmgr, если создавали до этого: sudo efibootmgr -Bb <номер>\n" >> "$NOTES"
-    echo -e "\tНе забудьте настроить /boot/limine.conf\n" >> "$NOTES"
+		echo -e "\033[33mМожете удалить ненужную запись efibootmgr, \nесли создавали до этого: sudo efibootmgr -Bb <номер>\n" >> "$NOTES"
+		echo -e "Не забудьте настроить /boot/limine.conf\033[0m\n" >> "$NOTES"
 fi
 
 # ---------- Отключение пищалки ----------
@@ -173,7 +173,7 @@ fi
 # ---------- Русские man-страницы ----------
 if [[ ! "$SET_MAN_RU" =~ ^[Nn]$ ]]; then
     yay -S --needed --noconfirm man-pages-ru
-    echo -e "\tИспользуйте man с названием нужной статьи, если знаете его, \n\tman -k для поиска совпадений в названии \n\tи man -K для поиска внутри статей.\n" >> "$NOTES"
+    echo -e "Используйте man с названием нужной статьи, если знаете его, \nman -k для поиска совпадений в названии \nи man -K для поиска внутри статей.\n" >> "$NOTES"
 fi
 
 # ---------- Полезные TUI/CLI утилиты ----------
@@ -185,7 +185,7 @@ yay -S --needed --noconfirm \
     brightnessctl ddcutil mpv \
     v4l2loopback-dkms amneziawg-dkms amneziawg-tools
 
-echo -e "\tСписок установленных пакетов можно найти в моей инструкции\n" >> "$NOTES"
+echo -e "Список установленных пакетов можно найти в моей инструкции\n" >> "$NOTES"
 
 # ---------- fish как основной шелл ----------
 echo "Настройка fish..."
@@ -214,15 +214,15 @@ if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
     cd ~/.dotfiles
     rm -rf ~/.config/fish
     stow -vS btop fastfetch fish nvim
-    echo -e "\tПодробности конфигураций можно узнать в моей инструкции.\n" >> "$NOTES"
+    echo -e "Подробности конфигураций можно узнать в моей инструкции.\n" >> "$NOTES"
 fi
 
 # ---------- Завершение ----------
-rm -rf ~/etc/{pipewire-bluetooth-autoconnect.service, nvidia.conf, intel-undervolt.conf, limine}
+rm -rf ~/etc/{pipewire-bluetooth-autoconnect.service,nvidia.conf,intel-undervolt.conf,limine}
 echo
-echo "=== Советы по дальнейшей настройке ==="
+echo "======================= Советы по дальнейшей настройке ======================="
 cat "$NOTES"
-echo
-echo "=== Post-install завершён ==="
-echo "Крайне желательно перезагрузится"
-echo "Приятной работы!"
+echo -e "\033[32mВы можете использовать ~/etc/gui.sh, чтобы установить графическое окружение\033[0m"
+echo -e "\033[31mКрайне желательно перезагрузится и включить Secure Boot\033[0m"
+echo "============================ Post-install завершён ============================"
+echo "                                Приятной работы!"
