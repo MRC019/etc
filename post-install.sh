@@ -159,7 +159,7 @@ fi
 
 # ---------- Отключение пищалки ----------
 if [[ ! "$SET_BELL" =~ ^[Nn]$ ]]; then
-    sudo sed -i 's/^# set bell-style none/set bell-style none/' /etc/inputrc
+    sudo sed -i 's/^.*set bell-style none/set bell-style none/' /etc/inputrc
     echo "Пищалка отключена в /etc/inputrc"
 fi
 
@@ -200,6 +200,7 @@ sudo systemctl enable pkgfile-update.timer
 # ---------- Настройка git ----------
 echo "Настройка git..."
 mkdir -p ~/.config/git
+touch ~/.config/git/config
 git config --global user.email "$GIT_EMAIL"
 git config --global user.name "$GIT_NAME"
 git config --global core.editor "nvim"
