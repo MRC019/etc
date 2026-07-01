@@ -36,7 +36,17 @@ select ucode_choice in "intel-ucode" "amd-ucode"; do
     break
 done
 
-# регион wireless-regdb (по умолчанию RU)
+# архитектура для makepkg
+echo "Выберите архитектуру процессора:"
+select march_choice in "raptorlake" "native" "x86-64-v3" "x86-64-v4" "other"; do
+    case $march_choice in
+        other) read -p "Введите архитектуру (например znver4): " MARCH; break;;
+        "")     echo "Неверный выбор";;
+        *)      MARCH=$march_choice; break;;
+    esac
+done
+
+# регион wireless-regdb
 read -p "Регион для wireless-regdb [RU]: " REGDOM
 REGDOM=${REGDOM:-RU}
 
@@ -48,16 +58,6 @@ TIMEZONE=${TIMEZONE:-Europe/Moscow}
 read -p "Язык системы (ru_RU/en_US) [ru_RU]: " LANG_CHOICE
 LANG_CHOICE=${LANG_CHOICE:-ru_RU}
 LANG_FULL="${LANG_CHOICE}.UTF-8"
-
-# архитектура для makepkg
-echo "Выберите архитектуру процессора:"
-select march_choice in "raptorlake" "native" "x86-64-v3" "x86-64-v4" "other"; do
-    case $march_choice in
-        other) read -p "Введите архитектуру (например znver4): " MARCH; break;;
-        "")     echo "Неверный выбор";;
-        *)      MARCH=$march_choice; break;;
-    esac
-done
 
 # ---------- установка пакетов ----------
 reflector -c RU -l 10 --sort rate --save /etc/pacman.d/mirrorlist
@@ -165,5 +165,5 @@ ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 umount -R /mnt
 
 echo
-echo "=== Установка завершена ==="
+echo "=============================== Установка завершена ==============================="
 echo "Перезагрузитесь (reboot) и запустите ~/etc/post-install.sh для завершения установки."
