@@ -16,7 +16,7 @@ sudo pacman -Syu --noconfirm
 sudo timedatectl set-ntp true
 
 # ---------- Проверка Secure Boot Setup Mode ----------
-read -p "Настроить Secure Boot? (Y/n): " SETUP_SB
+read -p "Настроить Secure Boot? [Y/n]: " SETUP_SB
 if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
     echo "Проверка статуса Secure Boot..."
     sudo pacman -S --needed --noconfirm sbctl
@@ -29,10 +29,10 @@ if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
 fi
 
 # ---------- Проверка необходимых файлов ----------
-read -p "Установить Limine и настроить dual-boot? (Y/n): " SETUP_LIMINE
+read -p "Установить Limine и настроить dual-boot? [Y/n]: " SETUP_LIMINE
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
-    read -p "  Найти и добавить Windows в меню Limine? (Y/n): " ADD_WIN
-    read -p "  Установить Memtest86+? (Y/n): " ADD_MEMTEST
+    read -p "  Найти и добавить Windows в меню Limine? [Y/n]: " ADD_WIN
+    read -p "  Установить Memtest86+? [Y/n]: " ADD_MEMTEST
 		if [ ! -f ~/etc/post-conf/limine ]; then
 				echo "Ошибка: ~/etc/post-conf/limine не найден."
 				echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
@@ -40,21 +40,21 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
 		fi
 fi
 
-read -p "Настроить драйверы NVIDIA? (Y/n): " SETUP_NVIDIA
+read -p "Настроить драйверы NVIDIA? [Y/n]: " SETUP_NVIDIA
 if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]] && [ ! -f ~/etc/post-conf/nvidia.conf ]; then
     echo "Ошибка: ~/etc/post-conf/nvidia.conf не найден."
     echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
     exit 1
 fi
 
-read -p "Настроить Intel-undervolt и power-profiles? (Y/n): " SETUP_INTEL
+read -p "Настроить Intel-undervolt и power-profiles? [Y/n]: " SETUP_INTEL
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]] && [ ! -f ~/etc/post-conf/intel-undervolt.conf ]; then
     echo "Ошибка: ~/etc/post-conf/intel-undervolt.conf не найден."
     echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
     exit 1
 fi
 
-read -p "Настроить Bluetooth? (Y/n): " SETUP_BT
+read -p "Настроить Bluetooth? [Y/n]: " SETUP_BT
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]] && [ ! -f ~/etc/post-conf/pipewire-bluetooth-autoconnect.service ]; then
     echo "Ошибка: ~/etc/post-conf/pipewire-bluetooth-autoconnect.service не найден."
     echo "Склонируйте репозиторий конфигов: git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
@@ -62,13 +62,13 @@ if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]] && [ ! -f ~/etc/post-conf/pipewire-bluetooth-au
 fi
 
 # ---------- Вопросы ----------
-read -p "Отключить watchdog? (Y/n): " SET_WATCHDOG
-read -p "Отключить пищалку (bell-style none в /etc/inputrc)? (Y/n): " SET_BELL
-read -p "Установить русские man-страницы (man-pages-ru)? (Y/n): " SET_MAN_RU
-read -p "Заблокировать вход по паролю для root? (Y/n): " SET_ROOT
+read -p "Отключить watchdog? [Y/n]: " SET_WATCHDOG
+read -p "Отключить пищалку (bell-style none в /etc/inputrc)? [Y/n]: " SET_BELL
+read -p "Установить русские man-страницы (man-pages-ru)? [Y/n]: " SET_MAN_RU
+read -p "Заблокировать вход по паролю для root? [Y/n]: " SET_ROOT
 read -p "Git email: " GIT_EMAIL
 read -p "Git имя: " GIT_NAME
-read -p "Установить мои .dotfiles и настроить stow? (Y/n): " SET_DOTFILES
+read -p "Установить мои .dotfiles и настроить stow? [Y/n]: " SET_DOTFILES
 
 # ---------- AUR-помощник ----------
 echo "Установка yay..."
