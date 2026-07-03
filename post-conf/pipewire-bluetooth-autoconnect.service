@@ -1,5 +1,5 @@
 [Unit]
-Description=Bluetooth autoconnect service for pulseaudio
+Description=Bluetooth autoconnect service for PipeWire
 After=pipewire-pulse.service
 
 [Service]
