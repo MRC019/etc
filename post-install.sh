@@ -99,7 +99,7 @@ systemctl --user enable pipewire-pulse.service
 echo "Настройка брандмауэра..."
 sudo ufw enable
 sudo systemctl enable ufw
-note "Открывать порты можно так: sudo ufw allow 25565/tcp comment 'minecraft'"
+note "Открывать порты можно так: sudo ufw allow 25565/tcp comment 'minecraft'\n"
 
 # ---------- bluetooth ----------
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
@@ -116,7 +116,7 @@ fi
 if [[ ! "$SET_ROOT" =~ ^[Nn]$ ]]; then
   echo "Блокировка root-пароля..."
   sudo passwd -l root
-  note "Чтобы разблокировать root, используйте: sudo passwd -u root"
+  note "Чтобы разблокировать root, используйте: sudo passwd -u root\n"
 fi
 
 # ---------- Secure Boot ----------
@@ -142,8 +142,8 @@ if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
   sudo install -m 644 ~/etc/post-conf/intel-undervolt.conf /etc/
   sudo systemctl enable intel-undervolt.service
   note "Используйте powerprofilesctl get, чтобы узнать текущий профиль."
-  note "powerprofilesctl set power-saver|balanced|performance, чтобы выставить."
-  note "Изменить лимиты питания можно в /etc/intel-undervolt.conf"
+  note "powerprofilesctl set power-saver|balanced|performance, чтобы выставить.\n"
+  note "Изменить лимиты питания можно в /etc/intel-undervolt.conf\n"
 fi
 
 # ---------- загрузчик Limine и мультисистемность ----------
@@ -163,8 +163,9 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
       sudo sbctl sign -s /boot/memtest86+/memtest.efi
     fi
   fi
-  note "\033[33mМожете удалить ненужную запись efibootmgr, \nесли создавали до этого: sudo efibootmgr -Bb <номер>"
-  note "Не забудьте настроить /boot/limine.conf\033[0m"
+  note "\033[33mМожете удалить ненужную запись efibootmgr,"
+  note "если создавали до этого: sudo efibootmgr -Bb <номер>\n"
+  note "Не забудьте настроить /boot/limine.conf\033[0m\n"
 fi
 
 # ---------- отключение пищалки ----------
@@ -185,7 +186,7 @@ if [[ ! "$SET_MAN_RU" =~ ^[Nn]$ ]]; then
   yay -S --needed --noconfirm man-pages-ru
   note "Используйте man с названием нужной статьи, если знаете его,"
   note "man -k для поиска совпадений в названии"
-  note "и man -K для поиска внутри статей."
+  note "и man -K для поиска внутри статей.\n"
 fi
 
 # ---------- полезные TUI/CLI утилиты ----------
@@ -197,7 +198,7 @@ yay -S --needed --noconfirm \
   fastfetch brightnessctl ddcutil \
   v4l2loopback-dkms amneziawg-dkms amneziawg-tools
 
-note "Список установленных пакетов можно найти в моей инструкции."
+note "Список установленных пакетов можно найти в моей инструкции.\n"
 
 # ---------- fish как основной шелл ----------
 echo "Настройка fish..."
@@ -226,7 +227,7 @@ if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
   cd ~/.dotfiles
   rm -rf ~/.config/{btop,fastfetch,fish,nvim}
   stow -vS btop fastfetch fish nvim
-  note "Подробности конфигураций можно узнать в моей инструкции."
+  note "Подробности конфигураций можно узнать в моей инструкции.\n"
 fi
 
 note "\033[32mВы можете использовать ~/etc/gui.sh, чтобы установить графическое окружение.\033[0m"
