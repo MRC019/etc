@@ -4,20 +4,20 @@ NOTES=$(mktemp)
 trap 'rm -f "$NOTES"' EXIT
 
 note() {
-    printf "%b\n" "$1" >> "$NOTES"
+  printf "%b\n" "$1" >>"$NOTES"
 }
 
 require_file() {
-    if [ ! -f "$1" ]; then
-        echo "Ошибка: $1 не найден."
-        echo "Склонируйте репозиторий конфигов:"
-        echo "git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
-        exit 1
-    fi
+  if [ ! -f "$1" ]; then
+    echo "Ошибка: $1 не найден."
+    echo "Склонируйте репозиторий конфигов:"
+    echo "git clone --depth=1 https://git.postmodernist.ru/Rabbit/etc ~/etc"
+    exit 1
+  fi
 }
 
 # ---------- проверка root ----------
-if (( EUID == 0 )); then
+if ((EUID == 0)); then
   echo "Не запускайте post-install от root."
   exit 1
 fi
@@ -35,7 +35,7 @@ sudo pacman -Syu --noconfirm
 sudo timedatectl set-ntp true
 
 # ---------- проверка Secure Boot Setup Mode ----------
-read -p "Настроить Secure Boot? [Y/n]: " SETUP_SB
+read -rp "Настроить Secure Boot? [Y/n]: " SETUP_SB
 if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
   echo "Проверка статуса Secure Boot..."
   sudo pacman -S --needed --noconfirm sbctl
@@ -48,36 +48,33 @@ if [[ ! "$SETUP_SB" =~ ^[Nn]$ ]]; then
 fi
 
 # ---------- проверка необходимых файлов ----------
-read -p "Установить Limine и настроить dual-boot? [Y/n]: " SETUP_LIMINE
+read -rp "Установить Limine и настроить dual-boot? [Y/n]: " SETUP_LIMINE
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
-  read -p "  Найти и добавить существующие .efi в меню Limine? [Y/n]: " ADD_EFI
-  read -p "  Установить Memtest86+? [Y/n]: " ADD_MEMTEST
+  read -rp "  Найти и добавить существующие .efi в меню Limine? [Y/n]: " ADD_EFI
+  read -rp "  Установить Memtest86+? [Y/n]: " ADD_MEMTEST
   require_file ~/etc/post-conf/limine
 fi
 
-read -p "Настроить драйверы NVIDIA? [Y/n]: " SETUP_NVIDIA
-#if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
-#  require_file ~/etc/post-conf/nvidia.conf
-#fi
+read -rp "Настроить драйверы NVIDIA? [Y/n]: " SETUP_NVIDIA
 
-read -p "Настроить Intel-undervolt и power-profiles? [Y/n]: " SETUP_INTEL
+read -rp "Настроить Intel-undervolt и power-profiles? [Y/n]: " SETUP_INTEL
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
   require_file ~/etc/post-conf/intel-undervolt.conf
 fi
 
-read -p "Настроить Bluetooth? [Y/n]: " SETUP_BT
+read -rp "Настроить Bluetooth? [Y/n]: " SETUP_BT
 if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
   require_file ~/etc/post-conf/pipewire-bluetooth-autoconnect.service
 fi
 
 # ---------- вопросы ----------
-read -p "Отключить watchdog? [Y/n]: " SET_WATCHDOG
-read -p "Отключить пищалку (bell-style none в /etc/inputrc)? [Y/n]: " SET_BELL
-read -p "Установить русские man-страницы (man-pages-ru)? [Y/n]: " SET_MAN_RU
-read -p "Заблокировать вход по паролю для root? [Y/n]: " SET_ROOT
-read -p "Git email: " GIT_EMAIL
-read -p "Git имя: " GIT_NAME
-read -p "Установить мои .dotfiles и настроить stow? [Y/n]: " SET_DOTFILES
+read -rp "Отключить watchdog? [Y/n]: " SET_WATCHDOG
+read -rp "Отключить пищалку (bell-style none в /etc/inputrc)? [Y/n]: " SET_BELL
+read -rp "Установить русские man-страницы (man-pages-ru)? [Y/n]: " SET_MAN_RU
+read -rp "Заблокировать вход по паролю для root? [Y/n]: " SET_ROOT
+read -rp "Git email: " GIT_EMAIL
+read -rp "Git имя: " GIT_NAME
+read -rp "Установить мои .dotfiles и настроить stow? [Y/n]: " SET_DOTFILES
 
 # ---------- AUR-помощник ----------
 echo "Установка yay..."
@@ -106,7 +103,6 @@ if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
   echo "Настройка Bluetooth..."
   yay -S --needed --noconfirm bluez bluez-utils bluetooth-autoconnect
   sudo systemctl enable --now bluetooth
-
   install -D ~/etc/post-conf/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
   systemctl --user enable pipewire-bluetooth-autoconnect.service
   sudo systemctl enable bluetooth-autoconnect.service
@@ -131,15 +127,15 @@ fi
 if [[ ! "$SETUP_NVIDIA" =~ ^[Nn]$ ]]; then
   echo "Настройка драйверов NVIDIA..."
   yay -S --needed --noconfirm nvidia-open-dkms
-  #sudo install -m 644 ~/etc/post-conf/nvidia.conf /etc/modprobe.d/
-  #sudo sed -i 's/^MODULES=()/MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+  # FIX: Ранняя загрузка модулей nvidia препятствует нормальному выходу из гибернации
+  # sudo sed -i 's/^MODULES=()/MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
   sudo mkinitcpio -P
 fi
 
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
   echo "Настройка Intel-undervolt и power-profiles..."
   yay -S --needed --noconfirm intel-undervolt power-profiles-daemon python-gobject
-  sudo install -m 644 ~/etc/post-conf/intel-undervolt.conf /etc/
+  sudo install -Dm 644 ~/etc/post-conf/intel-undervolt.conf /etc/
   sudo systemctl enable intel-undervolt.service
   note "Используйте powerprofilesctl get, чтобы узнать текущий профиль."
   note "powerprofilesctl set power-saver|balanced|performance, чтобы выставить.\n"
@@ -150,8 +146,8 @@ fi
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
   echo "Установка Limine..."
   yay -S --needed --noconfirm limine-mkinitcpio-hook
-  sudo install -m 644 ~/etc/post-conf/limine /etc/default/limine
-  
+  sudo install -Dm 644 ~/etc/post-conf/limine /etc/default/limine
+
   if [[ ! "$ADD_EFI" =~ ^[Nn]$ ]]; then
     sudo limine-scan
   fi
