@@ -4,103 +4,104 @@
 
 ## Базовая система
 
-* **base** — минимальный набор пакетов Arch Linux.
-* **base-devel** — инструменты для сборки пакетов.
-* **linux-zen** — ядро Linux Zen.
-* **linux-zen-headers** — заголовочные файлы ядра Linux Zen.
-* **linux-firmware** — прошивки для оборудования.
-* **intel-ucode** / **amd-ucode** — обновления микрокода процессора.
+- **base** — минимальный набор пакетов Arch Linux.
+- **base-devel** — инструменты для сборки пакетов.
+- **linux-zen** — ядро Linux Zen.
+- **linux-zen-headers** — заголовочные файлы ядра Linux Zen.
+- **linux-firmware** — прошивки для оборудования.
+- **intel-ucode** / **amd-ucode** — обновления микрокода процессора.
 
 ## Система
 
-* **polkit** — управление привилегиями.
-* **pacman-contrib** — дополнительные утилиты для Pacman.
-* **plymouth** — экран загрузки системы.
-* **terminus-font** — консольный шрифт Terminus.
-* **mold** — современный линковщик.
-* **axel** — многопоточный загрузчик файлов.
+- **polkit** — управление привилегиями.
+- **pacman-contrib** — дополнительные утилиты для Pacman.
+- **plymouth** — экран загрузки системы.
+- **terminus-font** — консольный шрифт Terminus.
+- **mold** — современный линковщик.
+- **axel** — многопоточный загрузчик файлов.
 
 ## Сжатие
 
-* **pigz** — многопоточная реализация gzip.
-* **pbzip2** — многопоточная реализация bzip2.
-* **plzip** — многопоточная реализация lzip.
+- **pigz** — многопоточная реализация gzip.
+- **pbzip2** — многопоточная реализация bzip2.
+- **plzip** — многопоточная реализация lzip.
 
 ## Сеть
 
-* **systemd-resolvconf** — совместимость с интерфейсом `resolvconf`.
-* **iwd** — демон управления беспроводными сетями.
-* **wireless-regdb** — база региональных ограничений Wi-Fi.
-* **impala** — TUI-клиент для iwd.
-* **openssh** — SSH-клиент и сервер.
-* **ufw** — настройка брандмауэра.
-* **amneziawg-dkms** — модуль ядра Amnezia WireGuard.
-* **amneziawg-tools** — инструменты Amnezia WireGuard.
+- **systemd-resolvconf** — совместимость с интерфейсом `resolvconf`.
+- **iwd** — демон управления беспроводными сетями.
+- **wireless-regdb** — база региональных ограничений Wi-Fi.
+- **impala** — TUI-клиент для iwd.
+- **openssh** — SSH-клиент и сервер.
+- **ufw** — настройка брандмауэра.
+- **amneziawg-dkms** — модуль ядра Amnezia WireGuard.
+- **amneziawg-tools** — инструменты Amnezia WireGuard.
 
 ## Звук
 
-* **pipewire** — мультимедийный сервер.
-* **pipewire-pulse** — совместимость с PulseAudio.
-* **pipewire-alsa** — поддержка ALSA.
-* **pipewire-jack** — совместимость с JACK.
-* **wireplumber** — менеджер сессий PipeWire.
-* **wiremix** — консольный микшер PipeWire.
-* **alsa-utils** — утилиты ALSA.
-* **rtkit** — управление приоритетами потоков реального времени.
+- **pipewire** — мультимедийный сервер.
+- **pipewire-pulse** — совместимость с PulseAudio.
+- **pipewire-alsa** — поддержка ALSA.
+- **pipewire-jack** — совместимость с JACK.
+- **wireplumber** — менеджер сессий PipeWire.
+- **wiremix** — консольный микшер PipeWire.
+- **alsa-utils** — утилиты ALSA.
+- **rtkit** — управление приоритетами потоков реального времени.
 
 ## Консольные утилиты
 
-* **fish** — командная оболочка.
-* **less** — консольный пейджер.
-* **bash-completion** — автодополнение Bash.
-* **fd** — современная альтернатива `find`.
-* **ripgrep** (`rg`) — современная альтернатива `grep`.
-* **lsd** — современная альтернатива `ls`.
-* **fastfetch** — информация о системе.
-* **btop** — монитор ресурсов.
-* **brightnessctl** — управление яркостью.
-* **ddcutil** — управление параметрами монитора по DDC/CI.
-* **pkgfile** — поиск пакетов по имени файла.
+- **fish** — командная оболочка.
+- **less** — консольный пейджер.
+- **bash-completion** — автодополнение Bash.
+- **fd** — современная альтернатива `find`.
+- **ripgrep** (`rg`) — современная альтернатива `grep`.
+- **lsd** — современная альтернатива `ls`.
+- **bat** — альтернатива cat с подсветкой синтаксиса и git diff
+- **fastfetch** — информация о системе.
+- **btop** — монитор ресурсов.
+- **brightnessctl** — управление яркостью.
+- **ddcutil** — управление параметрами монитора по DDC/CI.
+- **pkgfile** — поиск пакетов по имени файла.
 
 ## Зависимости Neovim
 
-* **lua51** — интерпретатор Lua 5.1.
-* **luarocks** — менеджер пакетов Lua.
-* **tree-sitter-cli** — генератор грамматик Tree-sitter.
-* **nodejs** — среда выполнения JavaScript.
-* **npm** — менеджер пакетов Node.js.
+- **lua51** — интерпретатор Lua 5.1.
+- **luarocks** — менеджер пакетов Lua.
+- **tree-sitter-cli** — генератор грамматик Tree-sitter.
+- **nodejs** — среда выполнения JavaScript.
+- **npm** — менеджер пакетов Node.js.
   Используются отдельными плагинами Neovim и необходимы для моей конфигурации.
 
 ## Файловые системы
 
-* **ntfs-3g** — расширенная поддержка файловой системы NTFS.
+- **ntfs-3g** — расширенная поддержка файловой системы NTFS.
 
 ## Видео
 
-* **v4l2loopback-dkms** — модуль ядра для создания виртуальных V4L2-устройств.
+- **v4l2loopback-dkms** — модуль ядра для создания виртуальных V4L2-устройств.
 
-## Bluetooth *(опционально)*
+## Bluetooth _(опционально)_
 
-* **bluez** — стек Bluetooth.
-* **bluez-utils** — утилиты Bluetooth.
-* **bluetooth-autoconnect** — автоматическое переподключение устройств.
-* **bluetui** — TUI-клиент для управления Bluetooth.
+- **bluez** — стек Bluetooth.
+- **bluez-utils** — утилиты Bluetooth.
+- **bluetooth-autoconnect** — автоматическое переподключение устройств.
+- **bluetui** — TUI-клиент для управления Bluetooth.
 
-## Загрузчик и Secure Boot *(опционально)*
+## Загрузчик и Secure Boot _(опционально)_
 
-* **limine-mkinitcpio-hook** — интеграция Limine с mkinitcpio.
-* **memtest86+-efi** — UEFI-версия Memtest86+.
-* **sbctl** — управление Secure Boot.
+- **limine-mkinitcpio-hook** — интеграция Limine с mkinitcpio.
+- **memtest86+-efi** — UEFI-версия Memtest86+.
+- **sbctl** — управление Secure Boot.
 
-## Драйверы и управление питанием *(опционально)*
+## Драйверы и управление питанием _(опционально)_
 
-* **nvidia-open-dkms** — открытый драйвер NVIDIA.
-* **intel-undervolt** — настройка напряжений процессоров Intel.
-* **power-profiles-daemon** — управление профилями энергопотребления.
-* **python-gobject** — привязки GObject для Python, используемые `power-profiles-daemon`.
+- **nvidia-open-dkms** — открытый драйвер NVIDIA.
+- **intel-undervolt** — настройка напряжений процессоров Intel.
+- **power-profiles-daemon** — управление профилями энергопотребления.
+- **python-gobject** — привязки GObject для Python, используемые `power-profiles-daemon`.
 
 ## Дополнительно
 
-* **yay** — помощник для работы с AUR.
-* **stow** — управление dotfiles с помощью символических ссылок.
-* **man-pages-ru** — русскоязычные страницы руководства.
+- **yay** — помощник для работы с AUR.
+- **stow** — управление dotfiles с помощью символических ссылок.
+- **man-pages-ru** — русскоязычные страницы руководства.

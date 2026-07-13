@@ -188,7 +188,7 @@ fi
 # ---------- полезные TUI/CLI утилиты ----------
 echo "Установка консольных утилит..."
 yay -S --needed --noconfirm \
-  fish pkgfile fd ripgrep lsd \
+  fish pkgfile fd ripgrep lsd bat \
   luarocks lua51 tree-sitter-cli \
   nodejs npm impala bluetui btop \
   fastfetch brightnessctl ddcutil \
