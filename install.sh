@@ -2,7 +2,7 @@
 set -euo pipefail
 trap '
 umount -R /mnt 2>/dev/null || true
-swapoff "$SWAP" 2>/dev/null || true
+swapoff {"$SWAP":-} 2>/dev/null || true
 ' EXIT
 setfont ter-u32b
 
@@ -109,7 +109,7 @@ pacstrap -K /mnt base{,-devel} linux-{zen,zen-headers,firmware} "$UCODE_PKG" \
 genfstab -U /mnt >/mnt/etc/fstab
 
 # ---------- chroot-скрипт ----------
-cat >/mnt/root/setup-chroot.sh <<EOF
+cat >/mnt/root/setup-chroot.sh <<'EOF'
 #!/bin/bash
 set -euo pipefail
 
