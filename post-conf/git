@@ -1,0 +1,27 @@
+[init]
+	defaultBranch = master
+[push]
+  autoSetupRemote = true
+  followTags = true
+[fetch]
+  prune = true
+  pruneTags = true
+[merge]
+  conflictstyle = zdiff3 
+[rebase]
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+[diff]
+  algorithm = histogram
+  colorMoved = dimmed-zebra
+  renames = true
+  mnemonicPrefix = true
+[commit]
+  verbose = true
+[branch]
+  sort = -committerdate
+[tag]
+  sort = version:refname
+[column]
+  ui = auto

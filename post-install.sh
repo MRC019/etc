@@ -231,12 +231,9 @@ sudo systemctl enable pkgfile-update.timer
 
 # ---------- настройка git ----------
 echo "Настройка git..."
-install -D /dev/null ~/.config/git/config
+install -D ~/etc/post-conf/git ~/.config/git/config
 git config --global user.email "$GIT_EMAIL"
 git config --global user.name "$GIT_NAME"
-git config --global core.editor "nvim"
-git config --global core.pager "less -Fr"
-git config --global init.defaultBranch master
 
 # ---------- настройка .dotfiles ----------
 if [[ ! "$SET_DOTFILES" =~ ^[Nn]$ ]]; then
