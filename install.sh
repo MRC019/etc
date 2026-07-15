@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
-trap 'umount -R /mnt 2>/dev/null || true' EXIT
+trap '
+umount -R /mnt 2>/dev/null || true
+swapoff "$SWAP" 2>/dev/null || true
+' EXIT
 setfont ter-u32b
 
 # ---------- проверка root ----------
@@ -68,7 +71,7 @@ done
 # регион wireless-regdb
 read -rp "Регион для wireless-regdb [RU]: " REGDOM
 REGDOM=${REGDOM:-RU}
-grep -q "^#WIRELESS_REGDOM=\"$REGDOM\"" /etc/conf.d/wireless-regdom || {
+grep -Eq "^#?WIRELESS_REGDOM=\"$REGDOM\"" /etc/conf.d/wireless-regdom || {
   echo "Ошибка: неизвестный регион \"$REGDOM\"."
   exit 1
 }
@@ -87,7 +90,7 @@ TIMEZONE=${TIMEZONE:-Europe/Moscow}
 # язык системы
 read -rp "Язык системы (ru_RU/en_US) [ru_RU]: " LANG_CHOICE
 LANG_CHOICE="${LANG_CHOICE:-ru_RU}.UTF-8"
-grep -q "^#$LANG_CHOICE UTF-8" /etc/locale.gen || {
+grep -Eq "^#?$LANG_CHOICE UTF-8" /etc/locale.gen || {
   echo "Ошибка: локаль \"$LANG_CHOICE\" не найдена."
   exit 1
 }
@@ -101,7 +104,7 @@ pacstrap -K /mnt base{,-devel} linux-{zen,zen-headers,firmware} "$UCODE_PKG" \
   pigz pbzip2 terminus-font plymouth nvim git less openssh bash-completion
 
 # ---------- fstab ----------
-genfstab -U /mnt >>/mnt/etc/fstab
+genfstab -U /mnt >/mnt/etc/fstab
 
 # ---------- chroot-скрипт ----------
 cat >/mnt/root/setup-chroot.sh <<'EOF'
@@ -191,7 +194,7 @@ arch-chroot /mnt env \
 # ---------- пост-chroot действия ----------
 read -rp "Добавить запись в UEFI для Arch? (Нужно, если на раздел уже ссылается какая-то запись) [y/N]: " ADD_UEFI
 if [[ "$ADD_UEFI" =~ ^[Yy]$ ]]; then
-  DISK="/dev/$(lsblk -no PKNAME "$ESP")"
+  DISK="/dev/$(lsblk -no PARTN "$ESP")"
   PART_NUM=$(echo "$ESP" | grep -o '[0-9]*$')
   efibootmgr -c -d "$DISK" -p "$PART_NUM" -L "Arch Linux" -l /EFI/BOOT/BOOTX64.EFI -u
 fi
