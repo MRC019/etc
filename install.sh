@@ -140,6 +140,7 @@ install -Dm 644 mkinitcpio.conf /etc/
 install -Dm 644 linux-zen.preset /etc/mkinitcpio.d/
 install -Dm 644 pacman.conf /etc/
 install -Dm 644 makepkg.conf /etc/
+install -Dm 644 env.sh /etc/profile.d/
 install -Dm 644 network/* /etc/systemd/network/
 if [[ ! "$WAIT_ONLINE_ANY" =~ ^[Nn]$ ]]; then
   install -Dm644 override.conf \
