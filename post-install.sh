@@ -81,7 +81,7 @@ read -rp "Установить мои .dotfiles и настроить stow? [Y/n
 
 # ---------- установка rust ----------
 if [[ ! "$SET_RUSTUP" =~ ^[Nn]$ ]]; then
-  sudo pacman -S --needed --noconfirm rustup
+  sudo pacman -S --needed --noconfirm rustup lldb
   rustup default stable
 else
   sudo pacman -S --needed --noconfirm rust
