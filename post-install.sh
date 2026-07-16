@@ -128,8 +128,16 @@ sudo install -Dm644 ~/etc/post-conf/paru.conf /etc/
 if [[ ! "$SETUP_AWG" =~ ^[Nn]$ ]]; then
   paru -S --failfast --needed --noconfirm amneziawg-{dkms,tools}
   sudo install -Dm600 ~/etc/awg0.conf /etc/amnezia/amneziawg/awg0.conf
-  sudo systemctl enable awg-quick@awg0
   sudo awg-quick up awg0
+  trap '
+  sudo awg-quick down awg0 2>/dev/null || true
+  rm -rf "$NOTES" "$PWD/paru-git"
+  ' EXIT
+  echo "Проверка соединения..."
+  if ! ping -c1 archlinux.org; then
+    echo "Ошибка: туннель не предостовляет выхода в интернет. Подключитесь к сети и перезапустите скрипт."
+    exit 1
+  fi
 else
   pkgs+=(amneziawg-{dkms,tools})
 fi
