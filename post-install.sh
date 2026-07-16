@@ -98,7 +98,7 @@ else
   echo "paru уже установлен."
 fi
 
-sudo install -Dm 644 ~/etc/post-conf/paru.conf /etc/
+sudo install -Dm644 ~/etc/post-conf/paru.conf /etc/
 paru_install() {
   paru -S --failfast --needed --noconfirm "$@"
 }
@@ -123,7 +123,7 @@ if [[ ! "$SETUP_BT" =~ ^[Nn]$ ]]; then
   echo "Настройка Bluetooth..."
   paru_install bluez bluez-utils bluetooth-autoconnect
   sudo systemctl enable --now bluetooth
-  install -D ~/etc/post-conf/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
+  install -Dm644 ~/etc/post-conf/pipewire-bluetooth-autoconnect.service ~/.config/systemd/user/
   systemctl --user enable pipewire-bluetooth-autoconnect.service
   sudo systemctl enable bluetooth-autoconnect.service
 fi
@@ -158,7 +158,7 @@ fi
 if [[ ! "$SETUP_INTEL" =~ ^[Nn]$ ]]; then
   echo "Настройка Intel-undervolt и power-profiles..."
   paru_install intel-undervolt power-profiles-daemon python-gobject
-  sudo install -Dm 644 ~/etc/post-conf/intel-undervolt.conf /etc/
+  sudo install -Dm644 ~/etc/post-conf/intel-undervolt.conf /etc/
   sudo systemctl enable intel-undervolt.service
   note "Используйте powerprofilesctl get, чтобы узнать текущий профиль."
   note "powerprofilesctl set power-saver|balanced|performance, чтобы выставить.\n"
@@ -169,7 +169,7 @@ fi
 if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
   echo "Установка Limine..."
   paru_install limine-mkinitcpio-hook
-  sudo install -Dm 644 ~/etc/post-conf/limine /etc/default/limine
+  sudo install -Dm644 ~/etc/post-conf/limine /etc/default/limine
 
   if [[ ! "$ADD_EFI" =~ ^[Nn]$ ]]; then
     sudo limine-scan
@@ -233,7 +233,7 @@ sudo systemctl enable pkgfile-update.timer
 
 # ---------- настройка git ----------
 echo "Настройка git..."
-install -D ~/etc/post-conf/git ~/.config/git/config
+install -Dm644 ~/etc/post-conf/git ~/.config/git/config
 git config --global user.email "$GIT_EMAIL"
 git config --global user.name "$GIT_NAME"
 
