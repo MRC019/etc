@@ -30,9 +30,7 @@ read -rp "ESP-раздел (например /dev/nvme0n1p1): " ESP
 mount -m -o umask=0077 "$ESP" /mnt/boot
 
 read -rp "Swap-раздел (пусто, если не нужен): " SWAP
-if [ -n "$SWAP" ]; then
-  swapon "$SWAP"
-fi
+[[ -n "$SWAP" ]] && swapon "$SWAP"
 
 # выбор микрокода
 select ucode_choice in "intel-ucode" "amd-ucode"; do
@@ -116,11 +114,10 @@ else
 fi
 
 # ---------- cmdline ----------
-echo "root=UUID=$(blkid -s UUID -o value \"$ROOT\") rw quiet splash" > /mnt/etc/kernel/cmdline
+echo "root=UUID=$(blkid -s UUID -o value $ROOT) rw quiet splash" > /mnt/etc/kernel/cmdline
 
-# ---------- chroot-скрипт ----------
-cat >/mnt/root/setup-chroot.sh <<EOF
-#!/bin/bash
+# ---------- chroot ----------
+arch-chroot /mnt /bin/bash <<EOF
 set -euo pipefail
 
 # время
@@ -176,15 +173,7 @@ systemctl enable paccache.timer
 
 # UKI
 mkinitcpio -P
-
-# удаляем скрипт после выполнения
-rm /root/setup-chroot.sh
 EOF
-
-chmod +x /mnt/root/setup-chroot.sh
-
-# ---------- запуск chroot ----------
-arch-chroot /mnt /root/setup-chroot.sh
 
 # ---------- Efi-запись ----------
 read -rp "Добавить запись в UEFI для Arch? (Нужно, если на раздел уже ссылается какая-то запись) [y/N]: " ADD_UEFI
