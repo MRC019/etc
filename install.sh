@@ -105,10 +105,21 @@ pacstrap -K /mnt base{,-devel} linux-{zen,zen-headers,firmware} "$UCODE_PKG" \
   pigz pbzip2 terminus-font plymouth nvim git less openssh bash-completion
 
 # ---------- fstab ----------
-genfstab -U /mnt >/mnt/etc/fstab
+genfstab -U /mnt > /mnt/etc/fstab
+
+# ---------- esp ----------
+if [ -f /mnt/boot/EFI/BOOT/BOOTX64.EFI ]; then
+  mv /mnt/boot/EFI/BOOT/bootx64{,_win}.efi
+  echo "Резервный загрузчик Windows переименован в bootx64_win.efi"
+else
+  mkdir -p /mnt/boot/EFI/BOOT
+fi
+
+# ---------- cmdline ----------
+echo "root=UUID=$(blkid -s UUID -o value '$ROOT') rw quiet splash" > /mnt/etc/kernel/cmdline
 
 # ---------- chroot-скрипт ----------
-cat >/mnt/root/setup-chroot.sh <<'EOF'
+cat >/mnt/root/setup-chroot.sh <<EOF
 #!/bin/bash
 set -euo pipefail
 
@@ -150,7 +161,6 @@ if [[ ! "$WAIT_ONLINE_ANY" =~ ^[Nn]$ ]]; then
     /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
 fi
 cd /
-rm -r /home/"$USERNAME"/etc/early-conf
 
 # правка makepkg.conf, если архитектура не raptorlake
 if [ "$MARCH" != "raptorlake" ]; then
@@ -166,13 +176,6 @@ rm -f /boot/*.img
 systemctl enable paccache.timer
 
 # UKI
-mkdir -p /boot/EFI/BOOT
-if [ -f /boot/EFI/BOOT/BOOTX64.EFI ]; then
-  mv /boot/EFI/BOOT/BOOTX64.EFI /boot/EFI/BOOT/bootx64_win.efi
-  echo "Резервный загрузчик Windows переименован в bootx64_win.efi"
-fi
-ROOT_UUID=$(blkid -s UUID -o value "$ROOT")
-echo "root=UUID=$ROOT_UUID rw quiet splash" > /etc/kernel/cmdline
 mkinitcpio -P
 
 # удаляем скрипт после выполнения
@@ -182,20 +185,9 @@ EOF
 chmod +x /mnt/root/setup-chroot.sh
 
 # ---------- запуск chroot ----------
-arch-chroot /mnt env \
-  HOSTNAME="$HOSTNAME" \
-  USERNAME="$USERNAME" \
-  ROOT_PASS="$ROOT_PASS" \
-  USER_PASS="$USER_PASS" \
-  ROOT="$ROOT" \
-  REGDOM="$REGDOM" \
-  WAIT_ONLINE_ANY="$WAIT_ONLINE_ANY" \
-  TIMEZONE="$TIMEZONE" \
-  LANG_CHOICE="$LANG_CHOICE" \
-  MARCH="$MARCH" \
-  /root/setup-chroot.sh
+arch-chroot /mnt /root/setup-chroot.sh
 
-# ---------- пост-chroot действия ----------
+# ---------- Efi-запись ----------
 read -rp "Добавить запись в UEFI для Arch? (Нужно, если на раздел уже ссылается какая-то запись) [y/N]: " ADD_UEFI
 if [[ "$ADD_UEFI" =~ ^[Yy]$ ]]; then
   DISK="/dev/$(lsblk -no PKNAME "$ESP")"
