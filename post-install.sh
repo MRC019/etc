@@ -203,8 +203,7 @@ if [[ ! "$SETUP_LIMINE" =~ ^[Nn]$ ]]; then
     fi
   fi
   note "\033[33mМожете удалить ненужную запись efibootmgr,"
-  note "если создавали до этого: sudo efibootmgr -Bb <номер>\n"
-  note "Не забудьте настроить /boot/limine.conf\033[0m\n"
+  note "если создавали до этого: sudo efibootmgr -Bb <номер>\033[0m\n"
 fi
 
 # ---------- настройка .dotfiles ----------
