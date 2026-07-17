@@ -45,6 +45,7 @@ pkgs=(
   nwg-look
   dconf-editor
   papirus-icon-theme
+  papirus-folders-git
   kitty
   openbsd-netcat
   elephant
@@ -91,6 +92,7 @@ go telemetry off
 
 dconf load / <~/.config/nwg-look/dconf.ini
 nwg-look -x
+papirus-folders -C teal --theme Papirus-Dark
 
 (
   cd && git clone https://github.com/Darkkal44/qylock.git .qylock
