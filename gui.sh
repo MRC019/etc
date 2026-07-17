@@ -58,6 +58,8 @@ pkgs=(
   nvidia-settings
   speech-dispatcher
   telegram-desktop
+  meld
+  libreoffice-fresh-ru
 )
 
 read -rp "Установить solaar? [Y/n]: " SET_SOL
