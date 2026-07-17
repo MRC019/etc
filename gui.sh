@@ -8,6 +8,11 @@ pkgs=(
   ttf-jetbrains-mono-nerd
   otf-font-awesome
   sddm
+  qt6-declarative
+  qt6-5compat
+  qt6-svg
+  qt6-multimedia
+  qt6-multimedia-ffmpeg
   polkit-gnome # TODO: написать свое
   libappindicator
   xdg-desktop-portal-gtk
@@ -78,7 +83,15 @@ systemctl enable --user waybar swaync
     stow -vS solaar
   fi
 )
+
 rm -rf ~/.config/go/
 go telemetry off
+
 dconf load / <~/.config/nwg-look/dconf.ini
 nwg-look -x
+
+(
+  cd && git clone https://github.com/Darkkal44/qylock.git .qylock
+  cd .qylock
+  chmod +x sddm.sh && ./sddm.sh
+)
