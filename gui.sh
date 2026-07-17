@@ -82,6 +82,7 @@ systemctl enable --user waybar swaync
   cd ~/.dotfiles/
   rm -rf ~/.config/{electron-flags.conf,hypr,kitty,uwsm,walker,elephant,waybar,xdg-terminals.list}
   stow -vS electron GTK hypr kitty nautilus-actions uwsm walker waybar xdg-terminal-exec
+  sudo stow -vS themes -d GTK/.local/share/ -t /usr/share/themes/
   if [[ ! "$SET_SOL" =~ ^[Nn]$ ]]; then
     rm -rf ~/config/solaar
     stow -vS solaar
