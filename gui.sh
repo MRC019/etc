@@ -62,7 +62,7 @@ pkgs=(
   elephant-calc
   nvidia-settings
   speech-dispatcher
-  telegram-desktop
+  ayugram-desktop
   meld
   libreoffice-fresh-ru
 )
