@@ -25,6 +25,10 @@ pkgs=(
   hyprland
   qt5-wayland
   qt6-wayland
+  kvantum
+  kvantum-qt5
+  qt6ct
+  qt5ct
   hyprpicker
   hyprshot
   awww
@@ -81,11 +85,11 @@ curl -fsSL https://github.com/zen-browser/updates-server/raw/refs/heads/main/ins
 sudo systemctl enable sddm
 systemctl enable --user waybar swaync
 
+rm -rf ~/.config/{electron-flags.conf,hypr,kitty,uwsm,walker,elephant,waybar,xdg-terminals.list,qt5ct,qt6ct,dconf,gtk-3.0,gtk-4.0,nwg-look,xsettingsd}
 (
   cd ~/.dotfiles/
-  rm -rf ~/.config/{electron-flags.conf,hypr,kitty,uwsm,walker,elephant,waybar,xdg-terminals.list}
-  stow -vS electron GTK hypr kitty nautilus-actions uwsm walker waybar xdg-terminal-exec
-  sudo stow -vS themes -d GTK/.local/share/ -t /usr/share/themes/
+  stow -vS electron Theme hypr kitty nautilus-actions uwsm walker waybar xdg-terminal-exec
+  sudo stow -vS themes -d Theme/.local/share/ -t /usr/share/themes/
   if [[ ! "$SET_SOL" =~ ^[Nn]$ ]]; then
     rm -rf ~/config/solaar
     stow -vS solaar
